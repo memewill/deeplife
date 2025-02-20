@@ -1,0 +1,157 @@
+/* 基础样式，确保占满屏幕 */
+body, html {
+    background-color: #000; /* 设置背景颜色为黑色 */
+    color: #fff; /* 设置文本颜色为白色，以便在黑色背景上可见 */
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Flex布局实现左右分割 */
+.container {
+    display: flex;
+    height: 100vh;
+    flex-direction: row; /* PC端默认左右排列 */
+}
+
+/* 左侧GIF容器 */
+.left {
+    background-color: #000; /* 设置左侧背景颜色为黑色 */
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative; /* 为了定位血条 */
+}
+
+/* 血条容器 */
+.left .health-bar {
+    position: absolute;
+    bottom: 20px; /* 距离底部20px */
+    width: 80%; /* 血条宽度 */
+    height: 20px; /* 血条高度 */
+    background-color: #555; /* 背景颜色 */
+    border: 2px solid #fff; /* 边框颜色 */
+    border-radius: 10px; /* 圆角 */
+    overflow: hidden;
+}
+
+/* 血条 */
+.left .health-bar .health {
+    width: 50%; /* 初始宽度为100% */
+    height: 100%;
+    background: linear-gradient(90deg, #ff4d4d, #ff9999); /* 渐变颜色 */
+    animation: electric 1s infinite; /* 电流动画 */
+}
+
+/* 电流动画 */
+@keyframes electric {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100% 0;
+    }
+}
+
+.health-bar {
+    width: 100%;
+    height: 20px;
+    background-color: #ddd;
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 添加天数显示 */
+.health-bar::after {
+    content: '69天';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.health-bar-inner {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.electricity {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(255, 255, 255, 0.5) 10px,
+        rgba(255, 255, 255, 0.5) 20px
+    );
+}
+
+/* GIF图像自适应 */
+.left img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* 右侧容器 */
+.right {
+    background-color: #000; /* 设置右侧背景颜色为黑色 */
+    color: #fff; /* 设置右侧文本颜色为白色 */
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 思维链框体样式 */
+.thinking-box {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    background-color: #000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    box-sizing: border-box;
+    border-left: 0px solid #ccc; /* 初始边框宽度为0 */
+    transition: border-left-width 0.1s linear; /* 添加过渡效果 */
+}
+
+/* 思维链文本样式 */
+#thinking-chain {
+    white-space: pre-wrap;
+    font-family: monospace;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #8f8b8b;
+    margin: 0;
+    min-height: 1.5em; /* 确保最小高度为一行 */
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column; /* 移动端上下排列 */
+    }
+    .left, .right {
+        flex: none;
+        width: 100%;
+        height: 50vh; /* 各占一半高度 */
+    }
+    .thinking-box {
+        height: calc(100% - 40px); /* 减去padding */
+    }
+}
