@@ -3,35 +3,57 @@ document.addEventListener('DOMContentLoaded', function() {
     const thinkingBox = document.querySelector('.thinking-box');
     const text = generateText(); // 生成思维链文本
     let index = 0;
+    let displayedText = '';
 
     // 一个字一个字输出
     function typeWriter() {
         if (index < text.length) {
-            thinkingChain.textContent += text.charAt(index);
+            displayedText += text.charAt(index);
+            thinkingChain.textContent = displayedText;
             index++;
             
             // 更新引用线高度
-            const borderHeight = thinkingChain.offsetHeight;
-            thinkingBox.style.borderLeftWidth = '5px';
-            thinkingBox.style.borderLeftStyle = 'solid';
-            thinkingBox.style.borderLeftColor = '#ccc';
-            thinkingBox.style.height = `${borderHeight}px`;
+            const currentHeight = thinkingChain.getBoundingClientRect().height;
+            const borderLine = thinkingBox.querySelector('.border-line') || createBorderLine();
+            borderLine.style.height = `${currentHeight}px`;
             
-            // 滚动到最新内容
-            thinkingBox.scrollTop = thinkingBox.scrollHeight;
+            // 检查是否需要滚动
+            if (thinkingBox.scrollHeight > thinkingBox.clientHeight) {
+                thinkingBox.scrollTop = thinkingBox.scrollHeight;
+            }
+            
             setTimeout(typeWriter, 50); // 每50ms输出一个字符
         } else {
-            // 输出完毕后清空并重启
-            thinkingChain.textContent = '';
+            // 文本播放完毕，重新开始
             index = 0;
-            thinkingBox.style.height = 'auto';
-            setTimeout(typeWriter, 1000); // 停顿1秒后重新开始
+            // 保持最后的文本，从最后一行开始继续滚动
+            const lines = displayedText.split('\n');
+            if (lines.length > 20) { // 保持最后20行，可以根据需要调整
+                displayedText = lines.slice(-20).join('\n');
+            }
+            setTimeout(typeWriter, 50); // 继续播放
         }
     }
 
-    typeWriter();
+    // 创建动态边框线
+    function createBorderLine() {
+        const borderLine = document.createElement('div');
+        borderLine.className = 'border-line';
+        thinkingBox.appendChild(borderLine);
+        return borderLine;
+    }
 
+    typeWriter();
     updateDays(69);
+
+    // GIF 循环播放逻辑
+    const gifImage = document.querySelector('.left img');
+    function reloadGif() {
+        const src = gifImage.src;
+        gifImage.src = '';
+        gifImage.src = src;
+    }
+    setInterval(reloadGif, 3000);
 });
 
 function updateThinkingChain(text) {
