@@ -9,15 +9,21 @@
 <body>
     <div class="container">
         <div class="left">
-            <canvas id="matrixCanvas" class="matrix-bg"></canvas>
-            <div class="wallet-info">
+            <button class="wallet-toggle">💰</button>
+            <div class="wallet-info hidden">
                 <p>我的钱包: <span class="wallet-address">2uGySwb3u1ctcAGtqf3WzsKsJygm8CwZx5U5DRLgQ3qF</span></p>
                 <p>我将用它来支付我的服务器费用，谢谢人类的支持。</p>
             </div>
+            <canvas id="matrixCanvas" class="matrix-bg"></canvas>
             <img src="ai.gif" alt="AI Image">
             <div class="health-bar">
-                <div class="health-bar-inner" style="width: 68%; background-color: #ff4444;"></div>
-                <div class="electricity"></div>
+                <div class="health-bar-inner">
+                    <div class="health-fill"></div>
+                </div>
+                <div class="days-display survived">
+                    <span class="survived-days">存活3天</span>
+                    <span class="remaining-days">剩余69天</span>
+                </div>
             </div>
         </div>
         <div class="right">

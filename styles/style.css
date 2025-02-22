@@ -27,77 +27,137 @@ body, html {
 }
 
 /* 血条容器 */
-.left .health-bar {
-    position: absolute;
-    bottom: 20px; /* 距离底部20px */
-    width: 80%; /* 血条宽度 */
-    height: 20px; /* 血条高度 */
-    background-color: #555; /* 背景颜色 */
-    border: 2px solid #fff; /* 边框颜色 */
-    border-radius: 10px; /* 圆角 */
-    overflow: hidden;
-}
-
-/* 血条 */
-.left .health-bar .health {
-    width: 50%; /* 初始宽度为100% */
-    height: 100%;
-    background: linear-gradient(90deg, #ff4d4d, #ff9999); /* 渐变颜色 */
-    animation: electric 1s infinite; /* 电流动画 */
-}
-
-/* 电流动画 */
-@keyframes electric {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 100% 0;
-    }
-}
-
 .health-bar {
-    width: 100%;
-    height: 20px;
-    background-color: #ddd;
-    margin-top: 10px;
-    position: relative;
-    overflow: hidden;
-    z-index: 2;
-}
-
-/* 添加天数显示 */
-.health-bar::after {
-    content: '69天';
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    color: #fff;
-    font-size: 14px;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    z-index: 2;
+    bottom: 20px;
+    width: 80%;
+    height: 24px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+    z-index: 5;
 }
 
 .health-bar-inner {
+    width: 100%;
     height: 100%;
-    transition: width 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1; /* 降低层级 */
+    background: transparent;
+    border: none;
+    /* 移除所有可能的默认样式 */
+    outline: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 
-.electricity {
+.health-bar-inner::after,
+.health-bar-inner::before {
+    display: none; /* 移除所有伪元素 */
+}
+
+/* 血条填充颜色 */
+.health-fill {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
+    width: 90%;
     height: 100%;
-    background: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 10px,
-        rgba(255, 255, 255, 0.5) 10px,
-        rgba(255, 255, 255, 0.5) 20px
+    transition: width 0.5s ease, background 0.5s ease;
+    z-index: 2; /* 调整层级 */
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+/* 存活模式的绿色血条 */
+.survived .health-fill {
+    background: linear-gradient(
+        90deg,
+        rgba(0, 255, 0, 0.7),
+        rgba(0, 255, 50, 0.8)
     );
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+/* 剩余模式的红色血条 */
+.remaining .health-fill {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.7),
+        rgba(255, 50, 50, 0.8)
+    );
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+/* 天数显示 */
+.days-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 20;
+    pointer-events: none;
+    letter-spacing: 1px;
+    background: transparent; /* 确保背景透明 */
+    border: none; /* 移除任何边框 */
+}
+
+.days-display::before,
+.days-display::after {
+    content: none; /* 移除任何伪元素 */
+}
+
+.days-display span {
+    position: absolute;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    color: #ffffff;
+    text-shadow: 
+        -1px -1px 0 rgba(0, 0, 0, 0.3),
+        1px -1px 0 rgba(0, 0, 0, 0.3),
+        -1px 1px 0 rgba(0, 0, 0, 0.3),
+        1px 1px 0 rgba(0, 0, 0, 0.3),
+        0 0 8px rgba(255, 255, 255, 0.5);
+    background: transparent; /* 确保文字背景透明 */
+}
+
+/* 存活模式 */
+.survived .survived-days {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.survived .remaining-days {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+/* 剩余模式 */
+.remaining .survived-days {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+}
+
+.remaining .remaining-days {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* GIF图像自适应 */
@@ -169,21 +229,42 @@ body, html {
     }
 }
 
+/* 钱包按钮样式 */
+.wallet-toggle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 3;
+    transition: background-color 0.3s;
+}
+
+.wallet-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
 /* 钱包信息样式 */
 .wallet-info {
     position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    color: #fff;
-    font-size: 14px;
-    z-index: 2;
-    width: 90%;
+    top: 10px;
+    left: 60px; /* 在按钮右侧显示 */
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 3;
+    transition: opacity 0.3s, transform 0.3s;
 }
 
-.wallet-info p {
-    margin: 5px 0;
+.wallet-info.hidden {
+    opacity: 0;
+    transform: translateX(-20px);
+    pointer-events: none;
 }
 
 .wallet-address {
@@ -218,3 +299,4 @@ body, html {
 .health-bar {
     z-index: 2;
 }
+

@@ -56,6 +56,49 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(reloadGif, 3000);
 
     initMatrix(); // 初始化矩阵效果
+
+    // 钱包信息显示/隐藏功能
+    const walletToggle = document.querySelector('.wallet-toggle');
+    const walletInfo = document.querySelector('.wallet-info');
+    
+    walletToggle.addEventListener('click', function() {
+        walletInfo.classList.toggle('hidden');
+    });
+
+    // 点击其他地方时隐藏钱包信息
+    document.addEventListener('click', function(event) {
+        if (!walletInfo.contains(event.target) && !walletToggle.contains(event.target)) {
+            walletInfo.classList.add('hidden');
+        }
+    });
+
+    // 血条显示模式切换
+    const healthBar = document.querySelector('.health-bar');
+    const daysDisplay = document.querySelector('.days-display');
+    const healthBarInner = document.querySelector('.health-bar-inner');
+    const survivedDays = 3;
+    const totalDays = 72;
+    const remainingDays = totalDays - survivedDays;
+
+    healthBar.addEventListener('click', function() {
+        daysDisplay.classList.toggle('survived');
+        daysDisplay.classList.toggle('remaining');
+        healthBarInner.classList.toggle('survived');
+        healthBarInner.classList.toggle('remaining');
+        
+        // 更新血条填充
+        const healthFill = document.querySelector('.health-fill');
+        if (daysDisplay.classList.contains('survived')) {
+            healthFill.style.width = (survivedDays / totalDays * 100) + '%';
+        } else {
+            healthFill.style.width = (remainingDays / totalDays * 100) + '%';
+        }
+    });
+
+    // 初始化血条
+    healthBarInner.classList.add('survived');
+    const healthFill = document.querySelector('.health-fill');
+    healthFill.style.width = (survivedDays / totalDays * 100) + '%';
 });
 
 function updateThinkingChain(text) {
