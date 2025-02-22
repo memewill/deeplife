@@ -63,6 +63,7 @@ body, html {
     margin-top: 10px;
     position: relative;
     overflow: hidden;
+    z-index: 2;
 }
 
 /* 添加天数显示 */
@@ -104,6 +105,8 @@ body, html {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
+    position: relative;
+    z-index: 1; /* 恢复原来的层级 */
 }
 
 /* 右侧容器 */
@@ -119,11 +122,11 @@ body, html {
 .thinking-box {
     width: 100%;
     padding: 20px;
-    background-color: #000;
+    background-color: #000; /* 纯黑色背景 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
     box-sizing: border-box;
-    position: relative; /* 添加相对定位 */
+    position: relative;
 }
 
 /* 思维链文本样式 */
@@ -134,8 +137,10 @@ body, html {
     line-height: 1.5;
     color: #8f8b8b;
     margin: 0;
-    min-height: 4.5em; /* 同样修改为3行的高度 */
+    min-height: 3em; /* 同样修改为3行的高度 */
     padding-bottom: 1em; /* 添加底部间距 */
+    position: relative;
+    z-index: 1; /* 确保文本在canvas上层 */
 }
 
 /* 动态边框线样式 */
@@ -146,7 +151,7 @@ body, html {
     width: 5px;
     background-color: #ccc;
     transition: height 0.1s linear;
-    min-height: 4.5em; /* 修改为3行的高度 (1.5em * 3) */
+    min-height: 3em; /* 修改为3行的高度 (1.5em * 3) */
 }
 
 /* 移动端适配 */
@@ -192,4 +197,24 @@ body, html {
 .left {
     position: relative;
     /* ... 保持其他现有样式 ... */
+}
+
+/* 矩阵背景样式 */
+.matrix-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    z-index: 0; /* 恢复原来的层级 */
+}
+
+/* 确保其他元素在矩阵效果上层 */
+.wallet-info {
+    z-index: 2;
+}
+
+.health-bar {
+    z-index: 2;
 }

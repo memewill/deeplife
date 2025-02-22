@@ -54,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
         gifImage.src = src;
     }
     setInterval(reloadGif, 3000);
+
+    initMatrix(); // 初始化矩阵效果
 });
 
 function updateThinkingChain(text) {
@@ -116,4 +118,74 @@ function generateText() {
 function updateDays(days) {
     const healthBar = document.querySelector('.health-bar');
     healthBar.style.setProperty('--days', `'${days}天'`);
+}
+
+// 矩阵雨效果
+function initMatrix() {
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    const leftContainer = document.querySelector('.left');
+
+    function resizeCanvas() {
+        canvas.width = leftContainer.clientWidth;
+        canvas.height = leftContainer.clientHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // 字符集
+    const chars = '01'.split('');
+    const fontSize = 14;
+    const columns = Math.floor(canvas.width / fontSize);
+    const drops = new Array(columns).fill(-1); // 初始化为-1，表示未开始
+
+    // 随机启动每列
+    function randomStart() {
+        for (let i = 0; i < drops.length; i++) {
+            if (drops[i] === -1 && Math.random() > 0.99) { // 降低启动概率
+                drops[i] = 0;
+            }
+        }
+    }
+
+    // 绘制矩阵雨
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#0F0';
+        ctx.shadowColor = '#00FF00';
+        ctx.shadowBlur = 10;
+        ctx.font = `bold ${fontSize}px monospace`;
+
+        // 随机启动新的列
+        randomStart();
+
+        for (let i = 0; i < drops.length; i++) {
+            if (drops[i] >= 0) { // 只处理已启动的列
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                // 头部字符更亮
+                if (drops[i] * fontSize < fontSize) {
+                    ctx.fillStyle = '#FFF';
+                } else {
+                    ctx.fillStyle = '#0F0';
+                }
+
+                ctx.fillText(text, x, y);
+
+                // 当到达底部时，有机会重置
+                if (y > canvas.height && Math.random() > 0.98) {
+                    drops[i] = -1; // 重置为未启动状态
+                } else {
+                    drops[i]++;
+                }
+            }
+        }
+    }
+
+    // 降低动画速度（60ms约等于原来的两倍间隔）
+    setInterval(drawMatrix, 60);
 }
