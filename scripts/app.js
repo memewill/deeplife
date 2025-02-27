@@ -72,33 +72,66 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // 血条显示模式切换
+    // 设置初始时间（2025年2月27日零点）
+    const startTime = new Date('2025-02-27T00:00:00+08:00').getTime();
+    const totalDays = 69 * 24 * 60 * 60 * 1000; // 将69天转换为毫秒
+
+    // 更新时间显示
+    function updateTimeDisplay() {
+        const now = new Date().getTime();
+        const survivedTime = now - startTime;
+        const remainingTime = totalDays - survivedTime;
+
+        // 计算存活时间
+        const survivedDays = Math.floor(survivedTime / (24 * 60 * 60 * 1000));
+        const survivedHours = Math.floor((survivedTime % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        const survivedMinutes = Math.floor((survivedTime % (60 * 60 * 1000)) / (60 * 1000));
+        const survivedSeconds = Math.floor((survivedTime % (60 * 1000)) / 1000);
+
+        // 计算剩余时间
+        const remainingDays = Math.floor(remainingTime / (24 * 60 * 60 * 1000));
+        const remainingHours = Math.floor((remainingTime % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        const remainingMinutes = Math.floor((remainingTime % (60 * 60 * 1000)) / (60 * 1000));
+        const remainingSeconds = Math.floor((remainingTime % (60 * 1000)) / 1000);
+
+        // 更新显示
+        const survivedText = document.querySelector('.survived-days');
+        const remainingText = document.querySelector('.remaining-days');
+        
+        survivedText.textContent = `存活 ${survivedDays}天${survivedHours}时${survivedMinutes}分${survivedSeconds}秒`;
+        remainingText.textContent = `剩余 ${remainingDays}天${remainingHours}时${remainingMinutes}分${remainingSeconds}秒`;
+
+        // 更新血条长度
+        const healthFill = document.querySelector('.health-fill');
+        const totalMilliseconds = 69 * 24 * 60 * 60 * 1000;
+        const percentage = (survivedTime / totalMilliseconds) * 100;
+        
+        if (document.querySelector('.days-display').classList.contains('survived')) {
+            healthFill.style.width = `${percentage}%`;
+        } else {
+            healthFill.style.width = `${100 - percentage}%`;
+        }
+    }
+
+    // 每秒更新一次时间
+    setInterval(updateTimeDisplay, 1000);
+    updateTimeDisplay(); // 立即执行一次
+
+    // 血条点击切换事件
     const healthBar = document.querySelector('.health-bar');
     const daysDisplay = document.querySelector('.days-display');
     const healthBarInner = document.querySelector('.health-bar-inner');
-    const survivedDays = 3;
-    const totalDays = 72;
-    const remainingDays = totalDays - survivedDays;
 
     healthBar.addEventListener('click', function() {
         daysDisplay.classList.toggle('survived');
         daysDisplay.classList.toggle('remaining');
         healthBarInner.classList.toggle('survived');
         healthBarInner.classList.toggle('remaining');
-        
-        // 更新血条填充
-        const healthFill = document.querySelector('.health-fill');
-        if (daysDisplay.classList.contains('survived')) {
-            healthFill.style.width = (survivedDays / totalDays * 100) + '%';
-        } else {
-            healthFill.style.width = (remainingDays / totalDays * 100) + '%';
-        }
+        updateTimeDisplay(); // 更新显示
     });
 
     // 初始化血条
     healthBarInner.classList.add('survived');
-    const healthFill = document.querySelector('.health-fill');
-    healthFill.style.width = (survivedDays / totalDays * 100) + '%';
 });
 
 function updateThinkingChain(text) {
